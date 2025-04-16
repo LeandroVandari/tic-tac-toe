@@ -8,6 +8,9 @@ pub trait Board {
     /// Get the value of a single cell in the board, based on its index. Note that it has, effectively, two states:
     /// It can be **won** by a [`Player`], or not (in which case we return [`None`]). If it's not **won**, it might simply be empty,
     /// or a still contested board, in the case the type that implements this trait contains other [`Board`]s.
+    /// 
+    /// # Panics
+    /// This will panic if the requested `cell` is not inside the board.
     fn get_cell(&self, cell: usize) -> Option<&Player>;
 
     /// Get the state of the board. It is either:
@@ -92,6 +95,7 @@ impl InnerBoard {
 
 impl Board for InnerBoard {
     fn get_cell(&self, cell: usize) -> Option<&Player> {
+        debug_assert!(cell < 9);
         self.cells[cell].as_ref()
     }
 }
