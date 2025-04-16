@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use crate::{BoardState, Player, BoardResult};
+use crate::{BoardResult, BoardState, Player};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
 pub trait Board {
