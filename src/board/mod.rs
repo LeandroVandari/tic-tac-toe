@@ -102,8 +102,8 @@ impl Default for InnerBoard {
     }
 }
 
-impl From<[Option<Player>;9]> for InnerBoard {
-    fn from(value: [Option<Player>;9]) -> Self {
+impl From<[Option<Player>; 9]> for InnerBoard {
+    fn from(value: [Option<Player>; 9]) -> Self {
         Self { cells: value }
     }
 }
