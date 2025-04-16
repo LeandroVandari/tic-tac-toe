@@ -10,9 +10,7 @@ pub trait Board {
     /// or a still contested board, in the case the type that implements this trait contains other [`Board`]s.
     fn get_cell(&self, cell: usize) -> Option<&Player>;
 
-    /// Get the state of the board. It is either:
-    ///  1. In progress, in which case we return [`None`].
-    ///  2. Done, in which case we return the appropriate [`BoardWinner`], depending on the result.
+    /// Get the state of the game of the board. Check [`BoardState`] for information on the enum variants.
     fn get_state(&self) -> BoardState {
         for group in 0..3 {
             // Rows
