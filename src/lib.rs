@@ -1,10 +1,19 @@
 pub mod board;
 
 #[derive(PartialEq, Eq, Debug)]
-/// Represents the state of the winner of a board: either a player or a draw.
-pub enum BoardWinner {
+/// Represents the result of a finished board: either a player has won or it's a draw.
+/// If you want to represent a possibly on-going game, check [`BoardState`].
+pub enum BoardResult {
     Draw,
-    Player(Player),
+    Winner(Player),
+}
+
+#[derive(Debug, PartialEq, Eq)]
+/// Represents the state of a board. Either the game is in progress, or it's over and a [`BoardResult`] is available,
+/// detailing the winner (if any).
+pub enum BoardState {
+    InProgress,
+    Over(BoardResult),
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
