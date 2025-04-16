@@ -34,7 +34,7 @@ fn get_board_state() {
     let board_empty = InnerBoard::new();
     assert_eq!(
         board_empty.get_state(),
-        None,
+        BoardState::InProgress,
         "Doesn't properly get empty board state."
     );
 
@@ -51,7 +51,7 @@ fn get_board_state() {
     ]);
     assert_eq!(
         board_progress.get_state(),
-        None,
+        BoardState::InProgress,
         "Doesn't properly get in progress game state."
     );
 
@@ -68,7 +68,7 @@ fn get_board_state() {
     ]);
     assert_eq!(
         board_draw.get_state(),
-        Some(BoardWinner::Draw),
+        BoardState::Over(BoardResult::Draw),
         "Doesn't recognize a draw."
     );
 
@@ -85,7 +85,7 @@ fn get_board_state() {
     ]);
     assert_eq!(
         board_win_horizontal.get_state(),
-        Some(BoardWinner::Player(Player::Cross)),
+        BoardState::Over(BoardResult::Winner(Player::Cross)),
         "Doesn't recognize horizontal win"
     );
 
@@ -102,7 +102,7 @@ fn get_board_state() {
     ]);
     assert_eq!(
         board_win_vertical.get_state(),
-        Some(BoardWinner::Player(Player::Circle)),
+        BoardState::Over(BoardResult::Winner(Player::Circle)),
         "Doesn't recognize vertical win"
     );
 
@@ -119,7 +119,7 @@ fn get_board_state() {
     ]);
     assert_eq!(
         board_win_diagonal.get_state(),
-        Some(BoardWinner::Player(Player::Cross)),
+        BoardState::Over(BoardResult::Winner(Player::Cross)),
         "Doesn't recognize diagonal win"
     );
 }

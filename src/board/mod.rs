@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use crate::{BoardWinner, Player};
+use crate::{BoardState, Player, BoardResult};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
 pub trait Board {
@@ -13,7 +13,7 @@ pub trait Board {
     /// Get the state of the board. It is either:
     ///  1. In progress, in which case we return [`None`].
     ///  2. Done, in which case we return the appropriate [`BoardWinner`], depending on the result.
-    fn get_state(&self) -> Option<BoardWinner> {
+    fn get_state(&self) -> BoardState {
         for group in 0..3 {
             // Rows
             if self.get_cell(group * 3).is_some() {
@@ -27,7 +27,7 @@ pub trait Board {
                     }
                 }
                 if has_winner {
-                    return Some(BoardWinner::Player(*row_winner.unwrap()));
+                    return BoardState::Over(BoardResult::Winner(*row_winner.unwrap()));
                 }
             }
 
@@ -43,7 +43,7 @@ pub trait Board {
                     }
                 }
                 if has_winner {
-                    return Some(BoardWinner::Player(*col_winner.unwrap()));
+                    return BoardState::Over(BoardResult::Winner(*col_winner.unwrap()));
                 }
             }
         }
@@ -54,7 +54,7 @@ pub trait Board {
             if (center_cell == self.get_cell(0) && center_cell == self.get_cell(8))
                 || (center_cell == self.get_cell(2) && center_cell == self.get_cell(6))
             {
-                return Some(BoardWinner::Player(*player));
+                return BoardState::Over(BoardResult::Winner(*player));
             }
         }
 
@@ -67,10 +67,10 @@ pub trait Board {
             }
         }
         if is_draw {
-            return Some(BoardWinner::Draw);
+            return BoardState::Over(BoardResult::Draw);
         }
 
-        None
+        BoardState::InProgress
     }
 }
 
