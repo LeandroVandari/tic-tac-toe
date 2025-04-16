@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use crate::{BoardWinner, Player};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
@@ -71,6 +74,7 @@ pub trait Board {
     }
 }
 
+#[derive(PartialEq, Eq, Debug)]
 /// The inner-most board in the game. All of its cells are either empty or belong to a player.
 pub struct InnerBoard {
     cells: [Option<Player>; 9],
