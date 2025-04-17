@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests;
-
-use std::fmt::Display;
+mod inner_board;
 
 use crate::{BoardResult, BoardState, Player};
 
@@ -77,57 +76,4 @@ pub trait Board {
     }
 }
 
-impl Display for InnerBoard {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        const TEMPLATE_STR: &str = 
-" 0 │ 1 │ 2 
-———————————
- 3 │ 4 │ 5 
-———————————
- 6 │ 7 │ 8 \
-        ";
 
-        let mut result_str = TEMPLATE_STR.to_string();
-
-        for cell in 0..9 {
-            result_str = result_str.replace(char::from_digit(cell, 10).unwrap(), (if let Some(player) = self.get_cell(cell as usize) {player.into()} else {' '}).to_string().as_str());
-        }
-
-        write!(f, "{result_str}")
-    }
-}
-
-#[derive(PartialEq, Eq, Debug)]
-/// The inner-most board in the game. All of its cells are either empty or belong to a player.
-pub struct InnerBoard {
-    cells: [Option<Player>; 9],
-}
-
-impl InnerBoard {
-    #[must_use]
-    /// Returns a new empty inner board.
-    pub fn new() -> Self {
-        Self {
-            cells: [const { None }; 9],
-        }
-    }
-}
-
-impl Board for InnerBoard {
-    fn get_cell(&self, cell: usize) -> Option<&Player> {
-        debug_assert!(cell < 9);
-        self.cells[cell].as_ref()
-    }
-}
-
-impl Default for InnerBoard {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl From<[Option<Player>; 9]> for InnerBoard {
-    fn from(value: [Option<Player>; 9]) -> Self {
-        Self { cells: value }
-    }
-}
