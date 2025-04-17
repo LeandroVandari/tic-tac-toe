@@ -1,7 +1,7 @@
 use std::fmt::Display;
 use super::{Player, Board};
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Clone)]
 /// The inner-most board in the game. All of its cells are either empty or belong to a player.
 pub struct InnerBoard {
     cells: [Option<Player>; 9],
