@@ -1,9 +1,11 @@
 #[cfg(test)]
 mod tests;
 
-mod inner;
 mod cell;
+mod inner;
 pub mod recursive;
+
+use std::fmt::Display;
 
 use crate::{BoardResult, BoardState, Player};
 
@@ -57,7 +59,8 @@ pub trait Board<T: cell::Cell> {
         let center_cell = self.get_cell(4).owner();
         if let Some(player) = center_cell {
             if (center_cell == self.get_cell(0).owner() && center_cell == self.get_cell(8).owner())
-                || (center_cell == self.get_cell(2).owner() && center_cell == self.get_cell(6).owner())
+                || (center_cell == self.get_cell(2).owner()
+                    && center_cell == self.get_cell(6).owner())
             {
                 return BoardState::Over(BoardResult::Winner(*player));
             }
@@ -76,5 +79,27 @@ pub trait Board<T: cell::Cell> {
         }
 
         BoardState::InProgress
+    }
+}
+
+impl<T: cell::Cell> Display for dyn Board<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        const TEMPLATE_STR: &str = " 0 │ 1 │ 2 
+———————————
+ 3 │ 4 │ 5 
+———————————
+ 6 │ 7 │ 8 \
+        ";
+
+        let mut result_str = TEMPLATE_STR.to_string();
+
+        for cell in 0..9 {
+            result_str = result_str.replace(
+                char::from_digit(cell, 10).unwrap(),
+                self.get_cell(cell as usize).as_char().to_string().as_str(),
+            );
+        }
+
+        write!(f, "{result_str}")
     }
 }

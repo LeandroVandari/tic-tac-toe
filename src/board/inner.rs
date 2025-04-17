@@ -1,4 +1,4 @@
-use super::{Board, Player, cell::Cell};
+use super::{Board, Player};
 use std::fmt::Display;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
@@ -33,6 +33,14 @@ impl super::cell::Cell for Option<Player> {
     fn owner(&self) -> Option<&Player> {
         self.as_ref()
     }
+
+    fn as_char(&self) -> char {
+        if let Some(player) = self {
+            player.into()
+        } else {
+            ' '
+        }
+    }
 }
 
 impl Default for InnerBoard {
@@ -49,29 +57,7 @@ impl From<[Option<Player>; 9]> for InnerBoard {
 
 impl Display for InnerBoard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        const TEMPLATE_STR: &str = " 0 │ 1 │ 2 
-———————————
- 3 │ 4 │ 5 
-———————————
- 6 │ 7 │ 8 \
-        ";
-
-        let mut result_str = TEMPLATE_STR.to_string();
-
-        for cell in 0..9 {
-            result_str = result_str.replace(
-                char::from_digit(cell, 10).unwrap(),
-                (if let Some(player) = self.get_cell(cell as usize).owner() {
-                    player.into()
-                } else {
-                    ' '
-                })
-                .to_string()
-                .as_str(),
-            );
-        }
-
-        write!(f, "{result_str}")
+        (self as &dyn Board<Option<Player>>).fmt(f)
     }
 }
 

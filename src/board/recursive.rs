@@ -1,9 +1,8 @@
 use std::fmt::Display;
 
-
 use crate::{BoardResult, BoardState};
 
-use super::{Board, inner::InnerBoard, cell::Cell};
+use super::{Board, cell::Cell, inner::InnerBoard};
 pub use cell::RecursiveCell;
 
 pub struct RecursiveBoard {
@@ -41,22 +40,7 @@ impl Default for RecursiveBoard {
 
 impl Display for RecursiveBoard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        const TEMPLATE_STR: &str = " 0 │ 1 │ 2 
-———————————
- 3 │ 4 │ 5 
-———————————
- 6 │ 7 │ 8 \
-        ";
-
-        let mut result_str = TEMPLATE_STR.to_string();
-        for cell in 0..9 {
-            result_str = result_str.replace(
-                char::from_digit(cell, 10).unwrap(),
-                char::from(&self.cells[cell as usize]).to_string().as_str(),
-            )
-        }
-
-        write!(f, "{result_str}")
+        (self as &dyn Board<RecursiveCell>).fmt(f)
     }
 }
 
@@ -88,6 +72,10 @@ pub mod cell {
                     BoardResult::Winner(player) => Some(player),
                 },
             }
+        }
+
+        fn as_char(&self) -> char {
+            char::from(self)
         }
     }
 
