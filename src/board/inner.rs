@@ -1,5 +1,5 @@
+use super::{Board, Player, cell::Cell};
 use std::fmt::Display;
-use super::{Player, Board};
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 /// The inner-most board in the game. All of its cells are either empty or belong to a player.
@@ -22,10 +22,16 @@ impl InnerBoard {
     }
 }
 
-impl Board for InnerBoard {
-    fn get_cell_owner(&self, cell: usize) -> Option<&Player> {
+impl Board<Option<Player>> for InnerBoard {
+    fn get_cell(&self, cell: usize) -> &Option<Player> {
         debug_assert!(cell < 9);
-        self.cells[cell].as_ref()
+        &self.cells[cell]
+    }
+}
+
+impl super::cell::Cell for Option<Player> {
+    fn owner(&self) -> Option<&Player> {
+        self.as_ref()
     }
 }
 
@@ -43,8 +49,7 @@ impl From<[Option<Player>; 9]> for InnerBoard {
 
 impl Display for InnerBoard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        const TEMPLATE_STR: &str = 
-" 0 │ 1 │ 2 
+        const TEMPLATE_STR: &str = " 0 │ 1 │ 2 
 ———————————
  3 │ 4 │ 5 
 ———————————
@@ -54,7 +59,16 @@ impl Display for InnerBoard {
         let mut result_str = TEMPLATE_STR.to_string();
 
         for cell in 0..9 {
-            result_str = result_str.replace(char::from_digit(cell, 10).unwrap(), (if let Some(player) = self.get_cell_owner(cell as usize) {player.into()} else {' '}).to_string().as_str());
+            result_str = result_str.replace(
+                char::from_digit(cell, 10).unwrap(),
+                (if let Some(player) = self.get_cell(cell as usize).owner() {
+                    player.into()
+                } else {
+                    ' '
+                })
+                .to_string()
+                .as_str(),
+            );
         }
 
         write!(f, "{result_str}")
@@ -65,14 +79,14 @@ impl Display for InnerBoard {
 mod tests {
     use super::*;
     #[test]
-fn create_inner_board() {
-    assert_eq!(
-        InnerBoard::new(),
-        InnerBoard {
-            cells: [const { None }; 9]
-        }
-    )
-}
+    fn create_inner_board() {
+        assert_eq!(
+            InnerBoard::new(),
+            InnerBoard {
+                cells: [const { None }; 9]
+            }
+        )
+    }
     #[test]
     fn display_inner_board() {
         let board = InnerBoard::from([
@@ -87,12 +101,14 @@ fn create_inner_board() {
             None,
         ]);
 
-        assert_eq!(format!("{board}"), 
-" O │ X │   
+        assert_eq!(
+            format!("{board}"),
+            " O │ X │   
 ———————————
  X │ X │ X 
 ———————————
  O │   │   \
-        ");
+        "
+        );
     }
 }

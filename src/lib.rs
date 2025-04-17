@@ -36,7 +36,7 @@ impl From<&BoardResult> for char {
     fn from(value: &BoardResult) -> Self {
         match value {
             BoardResult::Draw => '-',
-            BoardResult::Winner(player) => player.into()
+            BoardResult::Winner(player) => player.into(),
         }
     }
 }
@@ -45,7 +45,7 @@ impl From<&BoardState> for char {
     fn from(value: &BoardState) -> Self {
         match value {
             BoardState::InProgress => ' ',
-            BoardState::Over(result) => result.into()
+            BoardState::Over(result) => result.into(),
         }
     }
 }
