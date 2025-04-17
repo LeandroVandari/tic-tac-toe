@@ -28,7 +28,7 @@ impl RecursiveBoard {
 
 
 impl Board for RecursiveBoard {
-    fn get_cell(&self, cell: usize) -> Option<&crate::Player> {
+    fn get_cell_owner(&self, cell: usize) -> Option<&crate::Player> {
         let cell = &self.cells[cell];
 
         match &cell.state {

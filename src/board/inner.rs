@@ -23,7 +23,7 @@ impl InnerBoard {
 }
 
 impl Board for InnerBoard {
-    fn get_cell(&self, cell: usize) -> Option<&Player> {
+    fn get_cell_owner(&self, cell: usize) -> Option<&Player> {
         debug_assert!(cell < 9);
         self.cells[cell].as_ref()
     }
@@ -54,7 +54,7 @@ impl Display for InnerBoard {
         let mut result_str = TEMPLATE_STR.to_string();
 
         for cell in 0..9 {
-            result_str = result_str.replace(char::from_digit(cell, 10).unwrap(), (if let Some(player) = self.get_cell(cell as usize) {player.into()} else {' '}).to_string().as_str());
+            result_str = result_str.replace(char::from_digit(cell, 10).unwrap(), (if let Some(player) = self.get_cell_owner(cell as usize) {player.into()} else {' '}).to_string().as_str());
         }
 
         write!(f, "{result_str}")
