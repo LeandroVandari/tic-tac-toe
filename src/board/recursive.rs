@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use crate::{BoardResult, BoardState};
 
-use super::{Board, cell::Cell, inner::InnerBoard};
+use super::{Board, BoardDisplay, cell::Cell, inner::InnerBoard};
 pub use cell::RecursiveCell;
 
 pub struct RecursiveBoard {
@@ -40,7 +40,7 @@ impl Default for RecursiveBoard {
 
 impl Display for RecursiveBoard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        (self as &dyn Board<RecursiveCell>).fmt(f)
+        <Self as BoardDisplay<_>>::fmt(self, f)
     }
 }
 

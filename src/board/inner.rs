@@ -1,4 +1,4 @@
-use super::{Board, Player};
+use super::{Board, BoardDisplay, Player};
 use std::fmt::Display;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
@@ -57,7 +57,7 @@ impl From<[Option<Player>; 9]> for InnerBoard {
 
 impl Display for InnerBoard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        (self as &dyn Board<Option<Player>>).fmt(f)
+        <Self as BoardDisplay<_>>::fmt(self, f)
     }
 }
 
