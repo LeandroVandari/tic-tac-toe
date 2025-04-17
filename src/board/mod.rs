@@ -2,30 +2,31 @@
 mod tests;
 
 mod inner;
+mod cell;
 pub mod recursive;
 
 use crate::{BoardResult, BoardState, Player};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
-pub trait Board {
+pub trait Board<T: cell::Cell> {
     /// Get the value of a single cell in the board, based on its index. Note that it has, effectively, two states:
     /// It can be **won** by a [`Player`], or not (in which case we return [`None`]). If it's not **won**, it might simply be empty,
     /// or a still contested board, in the case the type that implements this trait contains other [`Board`]s.
     ///
     /// # Panics
     /// This will panic if the requested `cell` is not inside the board.
-    fn get_cell_owner(&self, cell: usize) -> Option<&Player>;
+    fn get_cell(&self, cell: usize) -> &T;
 
     /// Get the state of the game of the board. Check [`BoardState`] for information on the enum variants.
     fn get_state(&self) -> BoardState {
         for group in 0..3 {
             // Rows
-            if self.get_cell_owner(group * 3).is_some() {
-                let row_winner = self.get_cell_owner(group * 3);
+            if self.get_cell(group * 3).owner().is_some() {
+                let row_winner = self.get_cell(group * 3).owner();
                 let mut has_winner = true;
 
                 for cell in 0..3 {
-                    if self.get_cell_owner(group * 3 + cell) != row_winner {
+                    if self.get_cell(group * 3 + cell).owner() != row_winner {
                         has_winner = false;
                         break;
                     }
@@ -36,12 +37,12 @@ pub trait Board {
             }
 
             // Cols
-            if self.get_cell_owner(group).is_some() {
-                let col_winner = self.get_cell_owner(group);
+            if self.get_cell(group).owner().is_some() {
+                let col_winner = self.get_cell(group).owner();
                 let mut has_winner = true;
 
                 for cell in 0..3 {
-                    if self.get_cell_owner(group + cell * 3) != col_winner {
+                    if self.get_cell(group + cell * 3).owner() != col_winner {
                         has_winner = false;
                         break;
                     }
@@ -53,10 +54,10 @@ pub trait Board {
         }
 
         // Diagonals: We use the fact that both diagonals intersect the center cell to just check if the extremities are equal to that.
-        let center_cell = self.get_cell_owner(4);
+        let center_cell = self.get_cell(4).owner();
         if let Some(player) = center_cell {
-            if (center_cell == self.get_cell_owner(0) && center_cell == self.get_cell_owner(8))
-                || (center_cell == self.get_cell_owner(2) && center_cell == self.get_cell_owner(6))
+            if (center_cell == self.get_cell(0).owner() && center_cell == self.get_cell(8).owner())
+                || (center_cell == self.get_cell(2).owner() && center_cell == self.get_cell(6).owner())
             {
                 return BoardState::Over(BoardResult::Winner(*player));
             }
@@ -65,7 +66,7 @@ pub trait Board {
         // Check for a draw
         let mut is_draw = true;
         for cell in 0..9 {
-            if self.get_cell_owner(cell).is_none() {
+            if self.get_cell(cell).owner().is_none() {
                 is_draw = false;
                 break;
             }

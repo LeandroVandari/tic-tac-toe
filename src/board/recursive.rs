@@ -1,8 +1,9 @@
 use std::fmt::Display;
 
+
 use crate::{BoardResult, BoardState};
 
-use super::{Board, inner::InnerBoard};
+use super::{Board, inner::InnerBoard, cell::Cell};
 
 pub struct RecursiveBoard {
     cells: [cell::RecursiveCell; 9],
@@ -17,17 +18,9 @@ impl RecursiveBoard {
     }
 }
 
-impl Board for RecursiveBoard {
-    fn get_cell_owner(&self, cell: usize) -> Option<&crate::Player> {
-        let cell = &self.cells[cell];
-
-        match &cell.state {
-            BoardState::InProgress => None,
-            BoardState::Over(result) => match result {
-                BoardResult::Draw => None,
-                BoardResult::Winner(player) => Some(player),
-            },
-        }
+impl Board<cell::RecursiveCell> for RecursiveBoard {
+    fn get_cell(&self, cell: usize) -> &cell::RecursiveCell {
+        &self.cells[cell]
     }
 }
 
@@ -103,6 +96,18 @@ mod cell {
     impl Default for RecursiveCell {
         fn default() -> Self {
             Self::new()
+        }
+    }
+
+    impl Cell for RecursiveCell {
+        fn owner(&self) -> Option<&crate::Player> {
+            match &self.state {
+                BoardState::InProgress => None,
+                BoardState::Over(result) => match result {
+                    BoardResult::Draw => None,
+                    BoardResult::Winner(player) => Some(player),
+                },
+            }
         }
     }
 }

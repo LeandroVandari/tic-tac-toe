@@ -1,4 +1,4 @@
-use super::{Board, Player};
+use super::{Board, Player, cell::Cell};
 use std::fmt::Display;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
@@ -22,10 +22,16 @@ impl InnerBoard {
     }
 }
 
-impl Board for InnerBoard {
-    fn get_cell_owner(&self, cell: usize) -> Option<&Player> {
+impl Board<Option<Player>> for InnerBoard {
+    fn get_cell(&self, cell: usize) -> &Option<Player> {
         debug_assert!(cell < 9);
-        self.cells[cell].as_ref()
+        &self.cells[cell]
+    }
+}
+
+impl super::cell::Cell for Option<Player> {
+    fn owner(&self) -> Option<&Player> {
+        self.as_ref()
     }
 }
 
@@ -55,7 +61,7 @@ impl Display for InnerBoard {
         for cell in 0..9 {
             result_str = result_str.replace(
                 char::from_digit(cell, 10).unwrap(),
-                (if let Some(player) = self.get_cell_owner(cell as usize) {
+                (if let Some(player) = self.get_cell(cell as usize).owner() {
                     player.into()
                 } else {
                     ' '
