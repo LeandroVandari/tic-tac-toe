@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod tests;
 
+use std::fmt::Display;
+
 use crate::{BoardResult, BoardState, Player};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
@@ -8,7 +10,7 @@ pub trait Board {
     /// Get the value of a single cell in the board, based on its index. Note that it has, effectively, two states:
     /// It can be **won** by a [`Player`], or not (in which case we return [`None`]). If it's not **won**, it might simply be empty,
     /// or a still contested board, in the case the type that implements this trait contains other [`Board`]s.
-    /// 
+    ///
     /// # Panics
     /// This will panic if the requested `cell` is not inside the board.
     fn get_cell(&self, cell: usize) -> Option<&Player>;
@@ -72,6 +74,26 @@ pub trait Board {
         }
 
         BoardState::InProgress
+    }
+}
+
+impl Display for InnerBoard {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        const TEMPLATE_STR: &str = 
+" 0 │ 1 │ 2 
+———————————
+ 3 │ 4 │ 5 
+———————————
+ 6 │ 7 │ 8 \
+        ";
+
+        let mut result_str = TEMPLATE_STR.to_string();
+
+        for cell in 0..9 {
+            result_str = result_str.replace(char::from_digit(cell, 10).unwrap(), (if let Some(player) = self.get_cell(cell as usize) {player.into()} else {' '}).to_string().as_str());
+        }
+
+        write!(f, "{result_str}")
     }
 }
 
