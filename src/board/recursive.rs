@@ -1,9 +1,8 @@
 use std::fmt::Display;
 
-
 use crate::{BoardResult, BoardState};
 
-use super::{Board, inner::InnerBoard, cell::Cell};
+use super::{Board, cell::Cell, inner::InnerBoard};
 pub use cell::RecursiveCell;
 
 pub struct RecursiveBoard {
