@@ -10,10 +10,15 @@ pub struct InnerBoard {
 impl InnerBoard {
     #[must_use]
     /// Returns a new empty inner board.
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             cells: [const { None }; 9],
         }
+    }
+
+    pub fn set_cell(&mut self, cell: usize, value: Option<Player>) {
+        debug_assert!(cell < 9);
+        self.cells[cell] = value;
     }
 }
 
@@ -21,11 +26,6 @@ impl Board for InnerBoard {
     fn get_cell(&self, cell: usize) -> Option<&Player> {
         debug_assert!(cell < 9);
         self.cells[cell].as_ref()
-    }
-
-    fn set_cell(&mut self, cell: usize, value: Option<Player>) {
-        debug_assert!(cell < 9);
-        self.cells[cell] = value;
     }
 }
 

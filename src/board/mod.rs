@@ -3,7 +3,7 @@ mod tests;
 
 
 mod inner;
-mod recursive;
+pub mod recursive;
 
 use crate::{BoardResult, BoardState, Player};
 
@@ -16,12 +16,6 @@ pub trait Board {
     /// # Panics
     /// This will panic if the requested `cell` is not inside the board.
     fn get_cell(&self, cell: usize) -> Option<&Player>;
-
-    /// Set the value of a single cell on the board to `value`, based on the index.
-    /// 
-    /// # Panics
-    /// This will panic if the requested `cell` is not inside the board.
-    fn set_cell(&mut self, cell: usize, value: Option<Player>);
 
     /// Get the state of the game of the board. Check [`BoardState`] for information on the enum variants.
     fn get_state(&self) -> BoardState {
