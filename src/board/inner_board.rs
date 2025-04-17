@@ -22,6 +22,11 @@ impl Board for InnerBoard {
         debug_assert!(cell < 9);
         self.cells[cell].as_ref()
     }
+
+    fn set_cell(&mut self, cell: usize, value: Option<Player>) {
+        debug_assert!(cell < 9);
+        self.cells[cell] = value;
+    }
 }
 
 impl Default for InnerBoard {
