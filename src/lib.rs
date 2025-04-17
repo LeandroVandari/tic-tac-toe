@@ -22,3 +22,12 @@ pub enum Player {
     Circle,
     Cross,
 }
+
+impl From<&Player> for char {
+    fn from(value: &Player) -> Self {
+        match value {
+            Player::Circle => 'O',
+            Player::Cross => 'X',
+        }
+    }
+}
