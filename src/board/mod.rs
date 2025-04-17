@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests;
 
-
 mod inner;
 pub mod recursive;
 
@@ -78,5 +77,3 @@ pub trait Board {
         BoardState::InProgress
     }
 }
-
-
