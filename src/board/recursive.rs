@@ -4,22 +4,23 @@ use std::fmt::Display;
 use crate::{BoardResult, BoardState};
 
 use super::{Board, inner::InnerBoard, cell::Cell};
+pub use cell::RecursiveCell;
 
 pub struct RecursiveBoard {
-    cells: [cell::RecursiveCell; 9],
+    cells: [RecursiveCell; 9],
 }
 
 impl RecursiveBoard {
     #[must_use]
     pub const fn new() -> Self {
         Self {
-            cells: [const { cell::RecursiveCell::new() }; 9],
+            cells: [const { RecursiveCell::new() }; 9],
         }
     }
 }
 
-impl Board<cell::RecursiveCell> for RecursiveBoard {
-    fn get_cell(&self, cell: usize) -> &cell::RecursiveCell {
+impl Board<RecursiveCell> for RecursiveBoard {
+    fn get_cell(&self, cell: usize) -> &RecursiveCell {
         &self.cells[cell]
     }
 }
@@ -27,7 +28,7 @@ impl Board<cell::RecursiveCell> for RecursiveBoard {
 impl From<[InnerBoard; 9]> for RecursiveBoard {
     fn from(value: [InnerBoard; 9]) -> Self {
         Self {
-            cells: value.map(|board| cell::RecursiveCell::from(board)),
+            cells: value.map(|board| RecursiveCell::from(board)),
         }
     }
 }
@@ -59,11 +60,11 @@ impl Display for RecursiveBoard {
     }
 }
 
-mod cell {
+pub mod cell {
     use super::*;
 
     #[derive(Debug, Clone)]
-    pub(super) struct RecursiveCell {
+    pub struct RecursiveCell {
         board: InnerBoard,
         pub(super) state: BoardState,
     }
