@@ -78,6 +78,18 @@ mod cell {
         }
     }
 
+    impl Cell for RecursiveCell {
+        fn owner(&self) -> Option<&crate::Player> {
+            match &self.state {
+                BoardState::InProgress => None,
+                BoardState::Over(result) => match result {
+                    BoardResult::Draw => None,
+                    BoardResult::Winner(player) => Some(player),
+                },
+            }
+        }
+    }
+
     impl From<InnerBoard> for RecursiveCell {
         fn from(value: InnerBoard) -> Self {
             Self {
@@ -96,18 +108,6 @@ mod cell {
     impl Default for RecursiveCell {
         fn default() -> Self {
             Self::new()
-        }
-    }
-
-    impl Cell for RecursiveCell {
-        fn owner(&self) -> Option<&crate::Player> {
-            match &self.state {
-                BoardState::InProgress => None,
-                BoardState::Over(result) => match result {
-                    BoardResult::Draw => None,
-                    BoardResult::Winner(player) => Some(player),
-                },
-            }
         }
     }
 }
