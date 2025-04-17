@@ -1,14 +1,4 @@
-use crate::board::*;
-
-#[test]
-fn create_inner_board() {
-    assert_eq!(
-        InnerBoard::new(),
-        InnerBoard {
-            cells: [const { None }; 9]
-        }
-    )
-}
+use crate::board::{*, inner_board::*};
 
 #[test]
 fn get_cell() {
