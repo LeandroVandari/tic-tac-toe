@@ -5,6 +5,8 @@ mod inner;
 mod cell;
 pub mod recursive;
 
+use std::fmt::Display;
+
 use crate::{BoardResult, BoardState, Player};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
@@ -76,5 +78,30 @@ pub trait Board<T: cell::Cell> {
         }
 
         BoardState::InProgress
+    }
+}
+
+
+impl<T: cell::Cell> Display for dyn Board<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        const TEMPLATE_STR: &str = " 0 │ 1 │ 2 
+        ———————————
+         3 │ 4 │ 5 
+        ———————————
+         6 │ 7 │ 8 \
+                ";
+        
+        let mut result_str = TEMPLATE_STR.to_string();
+
+        for cell in 0..9 {
+            result_str = result_str.replace(
+                char::from_digit(cell, 10).unwrap(),
+                self.get_cell(cell as usize).as_char()
+                .to_string()
+                .as_str(),
+            );
+        }
+
+        write!(f, "{result_str}")
     }
 }
