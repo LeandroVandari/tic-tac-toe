@@ -1,4 +1,4 @@
-use crate::board::{*, inner_board::*};
+use crate::board::{*, inner::*};
 
 #[test]
 fn get_cell() {

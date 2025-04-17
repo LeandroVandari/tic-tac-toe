@@ -1,6 +1,9 @@
 #[cfg(test)]
 mod tests;
-mod inner_board;
+
+
+mod inner;
+mod recursive;
 
 use crate::{BoardResult, BoardState, Player};
 
