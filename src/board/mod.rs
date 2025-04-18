@@ -1,17 +1,22 @@
+/// Deals with each individual cell. Is driven by the [`Cell`] trait.
+///
+/// More specifically, it concerns the abstractions required to be able
+/// to generically deal with different types of cells.
+pub mod cell;
+/// Contains the [`InnerBoard`], and its required implementations.
+pub mod inner;
+/// Contains the [`RecursiveBoard`]: the driving type of this module, as it represents the board
+/// of the Ultimate Tic-Tac-Toe game itself.
+pub mod recursive;
 #[cfg(test)]
 mod tests;
-
-mod cell;
-mod inner;
-pub mod recursive;
 
 use crate::{BoardResult, BoardState, Player};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
 pub trait Board<T: cell::Cell> {
-    /// Get the value of a single cell in the board, based on its index. Note that it has, effectively, two states:
-    /// It can be **won** by a [`Player`], or not (in which case we return [`None`]). If it's not **won**, it might simply be empty,
-    /// or a still contested board, in the case the type that implements this trait contains other [`Board`]s.
+    /// Get the value of a single cell in the board, based on its index. The only requirement for the cell is that it implements
+    /// [`Cell`](cell::Cell). That allows for the [`Cell::owner`](cell::Cell::owner) function to be called, which is all [`Board::get_state`] needs to know about.
     ///
     /// # Panics
     /// This will panic if the requested `cell` is not inside the board.
@@ -80,10 +85,30 @@ pub trait Board<T: cell::Cell> {
     }
 }
 
-trait BoardDisplay<T>: Board<T>
+/// A trait that implements a default [`fmt`](BoardDisplay::fmt) function that gives a reasonable
+/// representation for all [`Board`]s.
+///
+/// It is blanket implemented on all [`Board`]s. However, implementing [`Display`](std::fmt::Display)
+/// is still needed because, as it's a foreign trait, it cannot be implemented on generic types.
+///
+/// # Examples:
+///
+/// The recommended implementation of [`Display`](std::fmt::Display) is:
+/// ```ignore
+/// use tic_tac_toe::board::BoardDisplay;
+/// impl std::fmt::Display for MyTypeThatImplementsBoard {
+///     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+///         <Self as BoardDisplay<_>>::fmt(self, f)
+///     }
+/// }
+/// ```
+pub trait BoardDisplay<T>: Board<T>
 where
     T: cell::Cell,
 {
+    /// The method that allows for a general implementation of [`Display`](std::fmt::Display) for all implementers of [`Board`].
+    ///
+    /// Should be used as a simple redirection in the [`Display`](std::fmt::Display) implementation.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         const TEMPLATE_STR: &str = " 0 │ 1 │ 2 
 ———————————
@@ -105,6 +130,7 @@ where
     }
 }
 
+/// The blanket implementation of [`BoardDisplay`] that makes it available to all [`Board`]s.
 impl<B, C> BoardDisplay<C> for B
 where
     B: Board<C>,

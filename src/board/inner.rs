@@ -16,6 +16,7 @@ impl InnerBoard {
         }
     }
 
+    /// Sets the given `cell` to the provided cell value.
     pub fn set_cell(&mut self, cell: usize, value: Option<Player>) {
         debug_assert!(cell < 9);
         self.cells[cell] = value;
@@ -30,6 +31,7 @@ impl Board<Option<Player>> for InnerBoard {
 }
 
 impl super::cell::Cell for Option<Player> {
+    /// This is a no-op for this type.
     fn owner(&self) -> Option<&Player> {
         self.as_ref()
     }
