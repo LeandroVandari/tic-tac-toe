@@ -1,4 +1,4 @@
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 //! This crate is an implementation of a recursive Tic-Tac-Toe game, also known as the
 //! "**Ultimate Tic-Tac-Toe**".
 
