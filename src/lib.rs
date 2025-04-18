@@ -39,9 +39,9 @@ pub enum BoardState {
 ///
 /// Currently only circle and cross but maybe could have multiplayer later on.
 pub enum Player {
-    /// The player represented by a circle (O).
+    /// The player represented by a circle (`O`).
     Circle,
-    /// The player represented by a cross (X).
+    /// The player represented by a cross (`X`).
     Cross,
 }
 
