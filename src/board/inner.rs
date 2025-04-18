@@ -10,6 +10,13 @@ pub struct InnerBoard {
 impl InnerBoard {
     #[must_use]
     /// Returns a new empty inner board.
+    ///
+    /// # Examples
+    /// ```
+    /// use tic_tac_toe::board::InnerBoard;
+    ///
+    /// let board: InnerBoard = InnerBoard::new();
+    /// ```
     pub const fn new() -> Self {
         Self {
             cells: [const { None }; 9],
@@ -17,6 +24,20 @@ impl InnerBoard {
     }
 
     /// Sets the given `cell` to the provided cell value.
+    ///
+    /// # Examples
+    /// ```
+    /// use tic_tac_toe::{Player, board::{InnerBoard, Board}};
+    ///
+    /// let mut board = InnerBoard::new();
+    /// assert_eq!(board.get_cell(0), &None);
+    ///
+    /// board.set_cell(0, Some(Player::Cross));
+    /// assert_eq!(board.get_cell(0), &Some(Player::Cross));
+    ///
+    /// // Other cells remain unchanged
+    /// assert_eq!(board.get_cell(1), &None);
+    /// ```
     pub fn set_cell(&mut self, cell: usize, value: Option<Player>) {
         debug_assert!(cell < 9);
         self.cells[cell] = value;
