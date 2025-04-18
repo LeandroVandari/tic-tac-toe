@@ -6,7 +6,7 @@ use super::{Board, BoardDisplay, cell::Cell, inner::InnerBoard};
 pub use cell::RecursiveCell;
 
 /// A game board that contains game boards of itself. Each cell is stored as a [`RecursiveCell`], which
-/// then contains the [InnerBoard] for that cell.
+/// then contains the [`InnerBoard`] for that cell.
 pub struct RecursiveBoard {
     cells: [RecursiveCell; 9],
 }

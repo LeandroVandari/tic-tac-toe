@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests;
 
-mod cell;
-mod inner;
+pub mod cell;
+pub mod inner;
 pub mod recursive;
 
 use crate::{BoardResult, BoardState, Player};
@@ -10,7 +10,7 @@ use crate::{BoardResult, BoardState, Player};
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
 pub trait Board<T: cell::Cell> {
     /// Get the value of a single cell in the board, based on its index. The only requirement for the cell is that it implements
-    /// [`cell::Cell`]. That allows for the [`cell::Cell::owner`] function to be called, which is all [`Board::get_state`] needs to know about.
+    /// [`Cell`](cell::Cell). That allows for the [`Cell::owner`](cell::Cell::owner) function to be called, which is all [`Board::get_state`] needs to know about.
     ///
     /// # Panics
     /// This will panic if the requested `cell` is not inside the board.
