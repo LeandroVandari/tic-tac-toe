@@ -16,6 +16,7 @@ impl InnerBoard {
         }
     }
 
+    /// Sets the given `cell` to the provided cell value.
     pub fn set_cell(&mut self, cell: usize, value: Option<Player>) {
         debug_assert!(cell < 9);
         self.cells[cell] = value;
