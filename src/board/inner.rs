@@ -66,7 +66,7 @@ impl Display for InnerBoard {
 impl FromStr for InnerBoard {
     type Err = crate::errors::InnerBoardFromStrError;
     /// Take the board as a single line string, with each cell represented by a single [`char`].
-    /// Empty cells marked by '-'.
+    /// Empty cells marked by `-`.
     ///
     /// ```
     /// # use tic_tac_toe::{Player, board::inner::InnerBoard};
