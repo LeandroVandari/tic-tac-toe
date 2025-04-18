@@ -9,6 +9,8 @@
 /// for this module.
 pub mod board;
 
+pub(crate) mod errors;
+
 #[derive(PartialEq, Eq, Debug, Clone)]
 /// Represents the result of a finished board: either a player has won or it's a draw.
 /// If you want to represent a possibly on-going game, check [`BoardState`].
@@ -44,6 +46,17 @@ impl From<&Player> for char {
         match value {
             Player::Circle => 'O',
             Player::Cross => 'X',
+        }
+    }
+}
+
+impl TryFrom<char> for Player {
+    type Error = errors::InvalidPlayerChar;
+    fn try_from(value: char) -> Result<Self, Self::Error> {
+        match value {
+            'O' => Ok(Self::Circle),
+            'X' => Ok(Self::Cross),
+            _ => Err(errors::InvalidPlayerChar),
         }
     }
 }

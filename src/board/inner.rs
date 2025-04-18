@@ -1,5 +1,5 @@
 use super::{Board, BoardDisplay, Player};
-use std::fmt::Display;
+use std::{fmt::Display, str::FromStr};
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 /// The inner-most board in the game. All of its cells are either empty or belong to a player.
@@ -60,6 +60,33 @@ impl From<[Option<Player>; 9]> for InnerBoard {
 impl Display for InnerBoard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         <Self as BoardDisplay<_>>::fmt(self, f)
+    }
+}
+
+impl FromStr for InnerBoard {
+    type Err = crate::errors::InnerBoardFromStrError;
+    /// Take the board as a single line string, with each cell represented by a single [`char`].
+    /// Empty cells marked by '-'.
+    ///
+    /// ```
+    /// # use tic_tac_toe::{Player, board::inner::InnerBoard};
+    /// # use std::str::FromStr;
+    /// let board = InnerBoard::from_str("OX-XXXO--").unwrap();
+    /// assert_eq!(board, InnerBoard::from([Some(Player::Circle), Some(Player::Cross), None, Some(Player::Cross), Some(Player::Cross), Some(Player::Cross), Some(Player::Circle), None, None]))
+    /// ```
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.len() != 9 {
+            return Err(crate::errors::InnerBoardFromStrError::InvalidLength);
+        }
+        let mut board_array = [const { None }; 9];
+        for (i, c) in s.chars().enumerate() {
+            if c == '-' {
+                continue;
+            }
+            board_array[i] = Some(Player::try_from(c)?);
+        }
+
+        Ok(InnerBoard::from(board_array))
     }
 }
 
