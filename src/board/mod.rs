@@ -3,11 +3,13 @@
 /// More specifically, it concerns the abstractions required to be able
 /// to generically deal with different types of cells.
 pub mod cell;
-/// Contains the [`InnerBoard`], and its required implementations.
+/// Contains the [`InnerBoard`](inner::InnerBoard), and its required implementations.
 pub mod inner;
+
 pub use inner::InnerBoard;
 
 /// Contains the [`RecursiveBoard`]: the driving type of this module, as it represents the board
+
 /// of the Ultimate Tic-Tac-Toe game itself.
 pub mod recursive;
 pub use recursive::RecursiveBoard;
