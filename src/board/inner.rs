@@ -31,6 +31,7 @@ impl Board<Option<Player>> for InnerBoard {
 }
 
 impl super::cell::Cell for Option<Player> {
+    /// This is a no-op for this type.
     fn owner(&self) -> Option<&Player> {
         self.as_ref()
     }

@@ -79,7 +79,7 @@ pub trait Board<T: cell::Cell> {
     }
 }
 
-trait BoardDisplay<T>: Board<T>
+pub trait BoardDisplay<T>: Board<T>
 where
     T: cell::Cell,
 {
