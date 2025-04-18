@@ -79,6 +79,23 @@ pub trait Board<T: cell::Cell> {
     }
 }
 
+/// A trait that implements a default [`fmt`](BoardDisplay::fmt) function that gives a reasonable
+/// representation for all [`Board`]s.
+///
+/// It is blanket implemented on all [`Board`]s. However, implementing [`Display`](std::fmt::Display)
+/// is still needed because, as it's a foreign trait, it cannot be implemented on generic types.
+///
+/// # Examples:
+///
+/// The recommended implementation of [`Display`](std::fmt::Display) is:
+/// ```ignore
+/// use tic_tac_toe::board::BoardDisplay;
+/// impl std::fmt::Display for MyTypeThatImplementsBoard {
+///     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+///         <Self as BoardDisplay<_>>::fmt(self, f)
+///     }
+/// }
+/// ```
 pub trait BoardDisplay<T>: Board<T>
 where
     T: cell::Cell,
@@ -104,6 +121,7 @@ where
     }
 }
 
+/// The blanket implementation of [`BoardDisplay`] that makes it available to all [`Board`]s.
 impl<B, C> BoardDisplay<C> for B
 where
     B: Board<C>,
