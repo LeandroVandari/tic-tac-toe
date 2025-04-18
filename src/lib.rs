@@ -4,7 +4,9 @@ pub mod board;
 /// Represents the result of a finished board: either a player has won or it's a draw.
 /// If you want to represent a possibly on-going game, check [`BoardState`].
 pub enum BoardResult {
+    /// A game that has had all cells filled without any of the players fullfilling the win conditions.
     Draw,
+    /// A game that has ended because one of the [`Player`]s filled one of the win conditions. Contains said [`Player`].
     Winner(Player),
 }
 
@@ -12,7 +14,10 @@ pub enum BoardResult {
 /// Represents the state of a board. Either the game is in progress, or it's over and a [`BoardResult`] is available,
 /// detailing the winner (if any).
 pub enum BoardState {
+    /// A game that still hasn't finished: There are still empty cells and none of the [`Player`]s have fullfilled
+    /// any of the win conditions.
     InProgress,
+    /// A game that has finished, either in a draw or a [`Player`] has won. Check [`BoardResult`] for more information.
     Over(BoardResult),
 }
 
