@@ -27,7 +27,7 @@ impl Board<RecursiveCell> for RecursiveBoard {
 impl From<[InnerBoard; 9]> for RecursiveBoard {
     fn from(value: [InnerBoard; 9]) -> Self {
         Self {
-            cells: value.map(|board| RecursiveCell::from(board)),
+            cells: value.map(RecursiveCell::from),
         }
     }
 }
