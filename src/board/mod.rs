@@ -1,9 +1,15 @@
+/// Deals with each individual cell. Is driven by the [`Cell`] trait.
+///
+/// More specifically, it concerns the abstractions required to be able
+/// to generically deal with different types of cells.
+pub mod cell;
+/// Contains the [`InnerBoard`], and its required implementations.
+pub mod inner;
+/// Contains the [`RecursiveBoard`]: the driving type of this module, as it represents the board
+/// of the Ultimate Tic-Tac-Toe game itself.
+pub mod recursive;
 #[cfg(test)]
 mod tests;
-
-pub mod cell;
-pub mod inner;
-pub mod recursive;
 
 use crate::{BoardResult, BoardState, Player};
 
@@ -100,6 +106,9 @@ pub trait BoardDisplay<T>: Board<T>
 where
     T: cell::Cell,
 {
+    /// The method that allows for a general implementation of [`Display`](std::fmt::Display) for all implementers of [`Board`].
+    ///
+    /// Should be used as a simple redirection in the [`Display`](std::fmt::Display) implementation.
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         const TEMPLATE_STR: &str = " 0 │ 1 │ 2 
 ———————————

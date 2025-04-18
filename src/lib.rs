@@ -1,3 +1,12 @@
+#![warn(missing_docs)]
+//! This crate is an implementation of a recursive Tic-Tac-Toe game, also known as the
+//! "**Ultimate Tic-Tac-Toe**".
+
+/// Handles everything that has direct relation to the management of the game board.
+/// Is driven by the [`Board`] trait.
+///
+/// Contains the [`RecursiveBoard`](recursive::RecursiveBoard), which is the top level type
+/// for this module.
 pub mod board;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
@@ -17,14 +26,16 @@ pub enum BoardState {
     /// A game that still hasn't finished: There are still empty cells and none of the [`Player`]s have fullfilled
     /// any of the win conditions.
     InProgress,
-    /// A game that has finished, either in a draw or a [`Player`] has won. Check [`BoardResult`] for more information.
+    /// A game that has finished, either in a draw or a [`Player`] has won. Check [`BoardResult`] for more
     Over(BoardResult),
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
 /// Represents a player. Currently only circle and cross but maybe could have multiplayer later on.
 pub enum Player {
+    /// The player represented by a circle (O).
     Circle,
+    /// The player represented by a cross (X).
     Cross,
 }
 

@@ -47,6 +47,7 @@ impl Display for RecursiveBoard {
     }
 }
 
+/// Concerns the [`RecursiveCell`] type, which is in each cell of the [`RecursiveBoard`].
 pub mod cell {
     use super::*;
 
