@@ -13,6 +13,7 @@ pub(crate) mod errors;
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 /// Represents the result of a finished board: either a player has won or it's a draw.
+///
 /// If you want to represent a possibly on-going game, check [`BoardState`].
 pub enum BoardResult {
     /// A game that has had all cells filled without any of the players fullfilling the win conditions.
@@ -22,8 +23,9 @@ pub enum BoardResult {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-/// Represents the state of a board. Either the game is in progress, or it's over and a [`BoardResult`] is available,
-/// detailing the winner (if any).
+/// Represents the state of a board.
+///
+/// Either the game is in progress, or it's over and a [`BoardResult`] is available, detailing the winner (if any).
 pub enum BoardState {
     /// A game that still hasn't finished: There are still empty cells and none of the [`Player`]s have fullfilled
     /// any of the win conditions.
@@ -33,7 +35,9 @@ pub enum BoardState {
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
-/// Represents a player. Currently only circle and cross but maybe could have multiplayer later on.
+/// Represents a player.
+///
+/// Currently only circle and cross but maybe could have multiplayer later on.
 pub enum Player {
     /// The player represented by a circle (O).
     Circle,
