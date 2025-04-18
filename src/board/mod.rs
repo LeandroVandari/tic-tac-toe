@@ -3,11 +3,15 @@
 /// More specifically, it concerns the abstractions required to be able
 /// to generically deal with different types of cells.
 pub mod cell;
-/// Contains the [`InnerBoard`](inner::InnerBoard), and its required implementations.
+/// Contains the [`InnerBoard`], and its required implementations.
 pub mod inner;
-/// Contains the [`RecursiveBoard`](recursive::RecursiveBoard): the driving type of this module, as it represents the board
+pub use inner::InnerBoard;
+
+/// Contains the [`RecursiveBoard`]: the driving type of this module, as it represents the board
 /// of the Ultimate Tic-Tac-Toe game itself.
 pub mod recursive;
+pub use recursive::RecursiveBoard;
+
 #[cfg(test)]
 mod tests;
 
@@ -17,12 +21,43 @@ use crate::{BoardResult, BoardState, Player};
 pub trait Board<T: cell::Cell> {
     /// Get the value of a single cell in the board, based on its index. The only requirement for the cell is that it implements
     /// [`Cell`](cell::Cell). That allows for the [`Cell::owner`](cell::Cell::owner) function to be called, which is all [`Board::get_state`] needs to know about.
+    /// # Examples
+    /// ```
+    /// # use tic_tac_toe::Player;
+    /// # use std::str::FromStr;
+    /// use tic_tac_toe::board::InnerBoard;
+    /// use tic_tac_toe::board::Board;
+    ///
+    /// let board = InnerBoard::from_str("OX-XXXO--").unwrap();
+    ///
+    /// assert_eq!(board.get_cell(0), &Some(Player::Circle));
+    /// assert_eq!(board.get_cell(1), &Some(Player::Cross));
+    /// assert_eq!(board.get_cell(2), &None);
+    /// ```
     ///
     /// # Panics
     /// This will panic if the requested `cell` is not inside the board.
+    /// ```should_panic
+    /// # use tic_tac_toe::board::InnerBoard;
+    /// # use tic_tac_toe::board::Board;
+    /// let board = InnerBoard::new();
+    /// board.get_cell(9); // <-- Outside the bounds of InnerBoard: panics!
+    /// ```
     fn get_cell(&self, cell: usize) -> &T;
 
     /// Get the state of the game of the board. Check [`BoardState`] for information on the enum variants.
+    ///
+    /// # Examples
+    /// ```
+    /// # use std::str::FromStr;
+    /// # use tic_tac_toe::*;
+    /// use tic_tac_toe::board::InnerBoard;
+    /// use tic_tac_toe::board::Board;
+    ///
+    /// let board = InnerBoard::from_str("OX-XXXO--").unwrap();
+    ///
+    /// assert_eq!(board.get_state(), BoardState::Over(BoardResult::Winner(Player::Cross)))
+    /// ```
     fn get_state(&self) -> BoardState {
         for group in 0..3 {
             // Rows
@@ -91,7 +126,23 @@ pub trait Board<T: cell::Cell> {
 /// It is blanket implemented on all [`Board`]s. However, implementing [`Display`](std::fmt::Display)
 /// is still needed because, as it's a foreign trait, it cannot be implemented on generic types.
 ///
-/// # Examples:
+/// # Examples
+/// ```
+/// # use std::str::FromStr;
+/// use tic_tac_toe::board::InnerBoard;
+///
+/// let board = InnerBoard::from_str("XXO--XOO-").unwrap();
+/// ```
+/// **Formatting that would look something like:**
+/// ```text
+///  X │ X │ O
+/// ———————————
+///    │   │ X
+/// ———————————
+///  O │ O │   
+/// ```
+///
+/// # Implementing Display:
 ///
 /// The recommended implementation of [`Display`](std::fmt::Display) is:
 /// ```

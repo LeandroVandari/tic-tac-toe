@@ -45,6 +45,14 @@ pub enum Player {
     Cross,
 }
 
+/// The [`Player`] should be representable by a single [`char`]`.
+///
+/// # Examples
+/// ```
+/// # use tic_tac_toe::Player;
+/// assert_eq!(char::from(&Player::Circle), 'O');
+/// assert_eq!(char::from(&Player::Cross), 'X');
+/// ```
 impl From<&Player> for char {
     fn from(value: &Player) -> Self {
         match value {
@@ -54,6 +62,19 @@ impl From<&Player> for char {
     }
 }
 
+/// The [`Player`] has representable forms as [`char`]s.
+///
+/// # Examples
+/// ```
+/// # use tic_tac_toe::Player;
+/// assert_eq!(Player::try_from('O'), Ok(Player::Circle));
+/// assert_eq!(Player::try_from('X'), Ok(Player::Cross));
+///
+/// // Doesn't work with other chars:
+/// assert!(Player::try_from('a').is_err());
+/// assert!(Player::try_from('o').is_err());
+/// assert!(Player::try_from('A').is_err());
+/// ```
 impl TryFrom<char> for Player {
     type Error = errors::InvalidPlayerChar;
     fn try_from(value: char) -> Result<Self, Self::Error> {
