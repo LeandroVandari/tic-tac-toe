@@ -94,7 +94,12 @@ pub trait Board<T: cell::Cell> {
 /// # Examples:
 ///
 /// The recommended implementation of [`Display`](std::fmt::Display) is:
-/// ```ignore
+/// ```
+/// # struct MyTypeThatImplementsBoard;
+/// # struct C; // Some Cell
+/// # impl tic_tac_toe::board::cell::Cell for C {fn owner(&self) -> Option<&tic_tac_toe::Player> {None} fn as_char(&self) -> char {'a'}}
+/// # impl tic_tac_toe::board::Board<C> for MyTypeThatImplementsBoard {fn get_cell(&self, _: usize) -> &C {&C}}
+/// #
 /// use tic_tac_toe::board::BoardDisplay;
 /// impl std::fmt::Display for MyTypeThatImplementsBoard {
 ///     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
