@@ -30,7 +30,7 @@ pub enum BoardState {
     /// A game that still hasn't finished: There are still empty cells and none of the [`Player`]s have fullfilled
     /// any of the win conditions.
     InProgress,
-    /// A game that has finished, either in a draw or a [`Player`] has won. Check [`BoardResult`] for more
+    /// A game that has finished, either in a draw or a [`Player`] has won. Check [`BoardResult`] for more information.
     Over(BoardResult),
 }
 
