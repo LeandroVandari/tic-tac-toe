@@ -75,7 +75,6 @@ impl From<&Player> for char {
 /// assert!(Player::try_from('o').is_err());
 /// assert!(Player::try_from('A').is_err());
 /// ```
-
 impl TryFrom<char> for Player {
     type Error = errors::InvalidPlayerChar;
     fn try_from(value: char) -> Result<Self, Self::Error> {
