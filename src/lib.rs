@@ -2,12 +2,11 @@
 //! This crate is an implementation of a recursive Tic-Tac-Toe game, also known as the
 //! "**Ultimate Tic-Tac-Toe**".
 
-/// Handles everything that has direct relation to the management of the game board.
-/// Is driven by the [`Board`](board::Board) trait.
-///
-/// Contains the [`RecursiveBoard`](board::recursive::RecursiveBoard), which is the top level type
-/// for this module.
-pub mod board;
+/// Deals with the state of the game, player moves, the board etc. It is the bare *Ultimate Tic-Tac-Toe* game/api.
+pub mod game;
+
+
+pub use game::board;
 
 pub(crate) mod errors;
 
