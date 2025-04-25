@@ -49,6 +49,12 @@ impl Board<Option<Player>> for InnerBoard {
         debug_assert!(cell < 9);
         &self.cells[cell]
     }
+    fn cells<'a>(&'a self) -> impl Iterator<Item = &'a Option<Player>>
+    where
+        Option<Player>: 'a,
+    {
+        self.cells.iter()
+    }
 }
 
 impl super::cell::Cell for Option<Player> {

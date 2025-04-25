@@ -25,6 +25,13 @@ impl Board<RecursiveCell> for RecursiveBoard {
     fn get_cell(&self, cell: usize) -> &RecursiveCell {
         &self.cells[cell]
     }
+
+    fn cells<'a>(&'a self) -> impl Iterator<Item = &'a RecursiveCell>
+    where
+        RecursiveCell: 'a,
+    {
+        self.cells.iter()
+    }
 }
 
 impl From<[InnerBoard; 9]> for RecursiveBoard {
@@ -61,7 +68,7 @@ pub mod cell {
     /// [`Board::get_state`], so it doesn't need to be updated all the time.
     pub struct RecursiveCell {
         board: InnerBoard,
-        pub(super) state: BoardState,
+        state: BoardState,
     }
 
     impl RecursiveCell {
@@ -72,6 +79,18 @@ pub mod cell {
                 board: InnerBoard::new(),
                 state: BoardState::InProgress,
             }
+        }
+
+        /// Returns the [`BoardState`] of the board contained by this cell.
+        ///
+        /// Is used for caching purposes.
+        pub fn state(&self) -> &BoardState {
+            &self.state
+        }
+
+        /// Returns the [`InnerBoard`] contained by this cell.
+        pub fn board(&self) -> &InnerBoard {
+            &self.board
         }
     }
 

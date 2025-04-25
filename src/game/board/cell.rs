@@ -11,4 +11,9 @@ pub trait Cell {
     /// Returns the [`Cell`]'s representation as a [`char`]. Required to be able to have more
     /// nuanced representations of cells by [`super::BoardDisplay`].
     fn as_char(&self) -> char;
+
+    /// Returns whether the cell is available, that is, whether there is no owner.
+    fn is_available(&self) -> bool {
+        self.owner().is_none()
+    }
 }

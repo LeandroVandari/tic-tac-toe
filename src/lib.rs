@@ -1,10 +1,9 @@
-#![deny(missing_docs)]
+#![warn(missing_docs)]
 //! This crate is an implementation of a recursive Tic-Tac-Toe game, also known as the
 //! "**Ultimate Tic-Tac-Toe**".
 
 /// Deals with the state of the game, player moves, the board etc. It is the bare *Ultimate Tic-Tac-Toe* game/api.
 pub mod game;
-
 
 pub use game::board;
 
@@ -31,6 +30,13 @@ pub enum BoardState {
     InProgress,
     /// A game that has finished, either in a draw or a [`Player`] has won. Check [`BoardResult`] for more information.
     Over(BoardResult),
+}
+
+impl BoardState {
+    /// Returns whether the state is [`BoardState::InProgress`].    
+    pub fn in_progress(&self) -> bool {
+        matches!(self, BoardState::InProgress)
+    }
 }
 
 #[derive(PartialEq, Eq, Clone, Copy, Debug)]
@@ -60,7 +66,6 @@ impl From<&Player> for char {
         }
     }
 }
-
 
 /// The [`Player`] has representable forms as [`char`]s.
 ///

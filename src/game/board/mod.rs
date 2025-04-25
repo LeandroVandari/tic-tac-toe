@@ -47,6 +47,11 @@ pub trait Board<T: cell::Cell> {
     /// ```
     fn get_cell(&self, cell: usize) -> &T;
 
+    /// Return an iterator over the [`Cell`](cell::Cell)s of the board.
+    fn cells<'a>(&'a self) -> impl Iterator<Item = &'a T>
+    where
+        T: 'a;
+
     /// Get the state of the game of the board. Check [`BoardState`] for information on the enum variants.
     ///
     /// # Examples
@@ -120,6 +125,18 @@ pub trait Board<T: cell::Cell> {
 
         BoardState::InProgress
     }
+
+    /// Returns all cells in the board that are available.
+    ///
+    /// Available cells are those where some player might still be able to make a move at some point in the future.
+    fn available_cells<'a>(&'a self) -> impl Iterator<Item = (usize, &'a T)>
+    where
+        T: 'a,
+    {
+        self.cells()
+            .enumerate()
+            .filter(|cell| cell.1.is_available())
+    }
 }
 
 /// A trait that implements a default [`fmt`](BoardDisplay::fmt) function that gives a reasonable
@@ -148,10 +165,10 @@ pub trait Board<T: cell::Cell> {
 ///
 /// The recommended implementation of [`Display`](std::fmt::Display) is:
 /// ```
-/// # struct MyTypeThatImplementsBoard;
+/// # struct MyTypeThatImplementsBoard {c: C};
 /// # struct C; // Some Cell
 /// # impl tic_tac_toe::board::cell::Cell for C {fn owner(&self) -> Option<&tic_tac_toe::Player> {None} fn as_char(&self) -> char {'a'}}
-/// # impl tic_tac_toe::board::Board<C> for MyTypeThatImplementsBoard {fn get_cell(&self, _: usize) -> &C {&C}}
+/// # impl tic_tac_toe::board::Board<C> for MyTypeThatImplementsBoard {fn get_cell(&self, _: usize) -> &C {&self.c} fn cells<'a>(&'a self) -> impl Iterator<Item = &'a C> where C: 'a { std::iter::once(&self.c) }}
 /// #
 /// use tic_tac_toe::board::BoardDisplay;
 /// impl std::fmt::Display for MyTypeThatImplementsBoard {
