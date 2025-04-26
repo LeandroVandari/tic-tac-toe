@@ -47,12 +47,11 @@ impl GameState {
         } else {
             self.board
                 .available_cells()
-                .map(|(idx, cell)| {
+                .flat_map(|(idx, cell)| {
                     cell.board()
                         .available_cells()
                         .map(move |c| CellPosition::new(idx, c.0))
                 })
-                .flatten()
                 .collect()
         }
     }
