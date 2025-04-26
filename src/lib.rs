@@ -7,6 +7,8 @@ pub mod game;
 
 pub use game::board;
 
+pub mod engine;
+
 pub(crate) mod errors;
 
 pub fn new() -> game::GameState {
