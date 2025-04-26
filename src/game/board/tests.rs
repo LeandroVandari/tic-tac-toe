@@ -14,9 +14,9 @@ fn get_cell() {
         None,
     ]);
 
-    assert_eq!(board.get_cell(0).owner(), None);
-    assert_eq!(board.get_cell(2).owner(), Some(&Player::Circle));
-    assert_eq!(board.get_cell(4).owner(), Some(&Player::Cross))
+    assert_eq!(board[0].owner(), None);
+    assert_eq!(board[2].owner(), Some(&Player::Circle));
+    assert_eq!(board[4].owner(), Some(&Player::Cross))
 }
 
 #[test]

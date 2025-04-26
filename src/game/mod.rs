@@ -33,7 +33,7 @@ impl GameState {
     /// Returns all of the available moves in a given position.
     pub fn available_moves(&self) -> AvailableMoves {
         if let Some(cell) = self.cell_to_play {
-            let recursive_cell = self.board.get_cell(cell);
+            let recursive_cell = &self.board[cell];
             assert!(
                 recursive_cell.is_available(),
                 "Cell that they can play in should be available."
@@ -42,7 +42,7 @@ impl GameState {
             recursive_cell
                 .board()
                 .available_cells()
-                .map(|c| Move::new(cell, c.0))
+                .map(|c| CellPosition::new(cell, c.0))
                 .collect()
         } else {
             self.board
@@ -50,49 +50,43 @@ impl GameState {
                 .map(|(idx, cell)| {
                     cell.board()
                         .available_cells()
-                        .map(move |c| Move::new(idx, c.0))
+                        .map(move |c| CellPosition::new(idx, c.0))
                 })
                 .flatten()
                 .collect()
         }
     }
+
+    pub fn make_move(&mut self, position: CellPosition) -> Result<(), ()> {
+        if !self.available_moves().contains(&position) {
+            return Err(());
+        }
+
+        self.board.set_cell(&position, Some(self.player_turn));
+        self.player_turn = self.player_turn.next();
+        Ok(())
+    }
+
+    pub fn get_state(&self) -> crate::BoardState {
+        self.board.get_state()
+    }
 }
 
 /// All of the available moves in a given position.
 pub struct AvailableMoves {
-    available_moves: arrayvec::ArrayVec<Move, 81>,
+    available_moves: arrayvec::ArrayVec<CellPosition, 81>,
 }
 
-impl FromIterator<Move> for AvailableMoves {
-    fn from_iter<T: IntoIterator<Item = Move>>(iter: T) -> Self {
-        Self {
-            available_moves: iter.into_iter().collect(),
-        }
-    }
-}
-
-impl Deref for AvailableMoves {
-    type Target = arrayvec::ArrayVec<Move, 81>;
-    fn deref(&self) -> &Self::Target {
-        &self.available_moves
-    }
-}
-
-impl DerefMut for AvailableMoves {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.available_moves
-    }
-}
-
-/// Represents a move in the [`RecursiveBoard`](board::RecursiveBoard).
-pub struct Move {
+/// Represents a specific given inner cell in the [`RecursiveBoard`](board::RecursiveBoard).
+#[derive(Debug, PartialEq, Eq)]
+pub struct CellPosition {
     /// The index to the [`RecursiveCell`](board::recursive::RecursiveCell) directly contained by the [`RecursiveBoard`](board::RecursiveBoard).
     pub outer_cell: usize,
     /// The index to the inner player contained in the above mentioned [`RecursiveCell`](board::recursive::RecursiveCell).
     pub inner_cell: usize,
 }
 
-impl Move {
+impl CellPosition {
     #[must_use]
     /// Returns a new [`Move`], with the provided cells.
     ///
@@ -103,5 +97,26 @@ impl Move {
             outer_cell,
             inner_cell,
         }
+    }
+}
+
+impl FromIterator<CellPosition> for AvailableMoves {
+    fn from_iter<T: IntoIterator<Item = CellPosition>>(iter: T) -> Self {
+        Self {
+            available_moves: iter.into_iter().collect(),
+        }
+    }
+}
+
+impl Deref for AvailableMoves {
+    type Target = arrayvec::ArrayVec<CellPosition, 81>;
+    fn deref(&self) -> &Self::Target {
+        &self.available_moves
+    }
+}
+
+impl DerefMut for AvailableMoves {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.available_moves
     }
 }

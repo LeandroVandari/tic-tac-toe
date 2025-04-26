@@ -1,5 +1,9 @@
 use super::{Board, BoardDisplay, Player};
-use std::{fmt::Display, str::FromStr};
+use std::{
+    fmt::Display,
+    ops::{Index, IndexMut},
+    str::FromStr,
+};
 
 #[derive(PartialEq, Eq, Debug, Clone)]
 /// The inner-most board in the game. All of its cells are either empty or belong to a player.
@@ -23,32 +27,28 @@ impl InnerBoard {
         }
     }
 
-    /// Sets the given `cell` to the provided cell value.
+    /// Sets the given `cell`'s owner to the provided value.
     ///
     /// # Examples
     /// ```
     /// use tic_tac_toe::{Player, board::{InnerBoard, Board}};
     ///
     /// let mut board = InnerBoard::new();
-    /// assert_eq!(board.get_cell(0), &None);
+    /// assert_eq!(board[0], None);
     ///
     /// board.set_cell(0, Some(Player::Cross));
-    /// assert_eq!(board.get_cell(0), &Some(Player::Cross));
+    /// assert_eq!(board[0], Some(Player::Cross));
     ///
     /// // Other cells remain unchanged
-    /// assert_eq!(board.get_cell(1), &None);
+    /// assert_eq!(board[1], None);
     /// ```
-    pub fn set_cell(&mut self, cell: usize, value: Option<Player>) {
+    pub fn set_cell(&mut self, cell: usize, owner: Option<Player>) {
         debug_assert!(cell < 9);
-        self.cells[cell] = value;
+        self.cells[cell] = owner;
     }
 }
 
 impl Board<Option<Player>> for InnerBoard {
-    fn get_cell(&self, cell: usize) -> &Option<Player> {
-        debug_assert!(cell < 9);
-        &self.cells[cell]
-    }
     fn cells<'a>(&'a self) -> impl Iterator<Item = &'a Option<Player>>
     where
         Option<Player>: 'a,
@@ -87,6 +87,21 @@ impl From<[Option<Player>; 9]> for InnerBoard {
 impl Display for InnerBoard {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         <Self as BoardDisplay<_>>::fmt(self, f)
+    }
+}
+
+impl Index<usize> for InnerBoard {
+    type Output = Option<Player>;
+    fn index(&self, cell: usize) -> &Self::Output {
+        debug_assert!(cell < 9);
+        &self.cells[cell]
+    }
+}
+
+impl IndexMut<usize> for InnerBoard {
+    fn index_mut(&mut self, cell: usize) -> &mut Self::Output {
+        debug_assert!(cell < 9);
+        &mut self.cells[cell]
     }
 }
 

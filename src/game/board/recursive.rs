@@ -1,6 +1,9 @@
-use std::fmt::Display;
+use std::{
+    fmt::Display,
+    ops::{Index, IndexMut},
+};
 
-use crate::{BoardResult, BoardState};
+use crate::{BoardResult, BoardState, Player, game::CellPosition};
 
 use super::{Board, BoardDisplay, cell::Cell, inner::InnerBoard};
 pub use cell::RecursiveCell;
@@ -19,13 +22,13 @@ impl RecursiveBoard {
             cells: [const { RecursiveCell::new() }; 9],
         }
     }
+
+    pub fn set_cell(&mut self, position: &CellPosition, owner: Option<Player>) {
+        self[position.outer_cell].set_cell(position.inner_cell, owner);
+    }
 }
 
 impl Board<RecursiveCell> for RecursiveBoard {
-    fn get_cell(&self, cell: usize) -> &RecursiveCell {
-        &self.cells[cell]
-    }
-
     fn cells<'a>(&'a self) -> impl Iterator<Item = &'a RecursiveCell>
     where
         RecursiveCell: 'a,
@@ -53,9 +56,32 @@ impl Display for RecursiveBoard {
         <Self as BoardDisplay<_>>::fmt(self, f)
     }
 }
+impl Index<usize> for RecursiveBoard {
+    type Output = RecursiveCell;
+    fn index(&self, cell: usize) -> &Self::Output {
+        debug_assert!(cell < 9);
+        &self.cells[cell]
+    }
+}
+
+impl IndexMut<usize> for RecursiveBoard {
+    fn index_mut(&mut self, cell: usize) -> &mut Self::Output {
+        debug_assert!(cell < 9);
+        &mut self.cells[cell]
+    }
+}
+
+impl Index<CellPosition> for RecursiveBoard {
+    type Output = Option<Player>;
+    fn index(&self, index: CellPosition) -> &Self::Output {
+        &self[index.outer_cell].board()[index.inner_cell]
+    }
+}
 
 /// Concerns the [`RecursiveCell`] type, which is in each cell of the [`RecursiveBoard`].
 pub mod cell {
+    use crate::Player;
+
     use super::*;
 
     #[derive(Debug, Clone)]
@@ -79,6 +105,11 @@ pub mod cell {
                 board: InnerBoard::new(),
                 state: BoardState::InProgress,
             }
+        }
+
+        pub fn set_cell(&mut self, cell: usize, owner: Option<Player>) {
+            self.board[cell] = owner;
+            self.state = self.board.get_state();
         }
 
         /// Returns the [`BoardState`] of the board contained by this cell.

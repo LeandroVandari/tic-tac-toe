@@ -20,33 +20,7 @@ mod tests;
 use crate::{BoardResult, BoardState, Player};
 
 /// The trait that represents a board. Allows to check for the states of cells, state of the board as a whole etc.
-pub trait Board<T: cell::Cell> {
-    /// Get the value of a single cell in the board, based on its index. The only requirement for the cell is that it implements
-    /// [`Cell`](cell::Cell). That allows for the [`Cell::owner`](cell::Cell::owner) function to be called, which is all [`Board::get_state`] needs to know about.
-    /// # Examples
-    /// ```
-    /// # use tic_tac_toe::Player;
-    /// # use std::str::FromStr;
-    /// use tic_tac_toe::board::InnerBoard;
-    /// use tic_tac_toe::board::Board;
-    ///
-    /// let board = InnerBoard::from_str("OX-XXXO--").unwrap();
-    ///
-    /// assert_eq!(board.get_cell(0), &Some(Player::Circle));
-    /// assert_eq!(board.get_cell(1), &Some(Player::Cross));
-    /// assert_eq!(board.get_cell(2), &None);
-    /// ```
-    ///
-    /// # Panics
-    /// This will panic if the requested `cell` is not inside the board.
-    /// ```should_panic
-    /// # use tic_tac_toe::board::InnerBoard;
-    /// # use tic_tac_toe::board::Board;
-    /// let board = InnerBoard::new();
-    /// board.get_cell(9); // <-- Outside the bounds of InnerBoard: panics!
-    /// ```
-    fn get_cell(&self, cell: usize) -> &T;
-
+pub trait Board<T: cell::Cell>: std::ops::Index<usize, Output = T> {
     /// Return an iterator over the [`Cell`](cell::Cell)s of the board.
     fn cells<'a>(&'a self) -> impl Iterator<Item = &'a T>
     where
@@ -68,12 +42,12 @@ pub trait Board<T: cell::Cell> {
     fn get_state(&self) -> BoardState {
         for group in 0..3 {
             // Rows
-            if self.get_cell(group * 3).owner().is_some() {
-                let row_winner = self.get_cell(group * 3).owner();
+            if self[group * 3].owner().is_some() {
+                let row_winner = self[group * 3].owner();
                 let mut has_winner = true;
 
                 for cell in 0..3 {
-                    if self.get_cell(group * 3 + cell).owner() != row_winner {
+                    if self[group * 3 + cell].owner() != row_winner {
                         has_winner = false;
                         break;
                     }
@@ -84,12 +58,12 @@ pub trait Board<T: cell::Cell> {
             }
 
             // Cols
-            if self.get_cell(group).owner().is_some() {
-                let col_winner = self.get_cell(group).owner();
+            if self[group].owner().is_some() {
+                let col_winner = self[group].owner();
                 let mut has_winner = true;
 
                 for cell in 0..3 {
-                    if self.get_cell(group + cell * 3).owner() != col_winner {
+                    if self[group + cell * 3].owner() != col_winner {
                         has_winner = false;
                         break;
                     }
@@ -101,11 +75,10 @@ pub trait Board<T: cell::Cell> {
         }
 
         // Diagonals: We use the fact that both diagonals intersect the center cell to just check if the extremities are equal to that.
-        let center_cell = self.get_cell(4).owner();
+        let center_cell = self[4].owner();
         if let Some(player) = center_cell {
-            if (center_cell == self.get_cell(0).owner() && center_cell == self.get_cell(8).owner())
-                || (center_cell == self.get_cell(2).owner()
-                    && center_cell == self.get_cell(6).owner())
+            if (center_cell == self[0].owner() && center_cell == self[8].owner())
+                || (center_cell == self[2].owner() && center_cell == self[6].owner())
             {
                 return BoardState::Over(BoardResult::Winner(*player));
             }
@@ -114,7 +87,7 @@ pub trait Board<T: cell::Cell> {
         // Check for a draw
         let mut is_draw = true;
         for cell in 0..9 {
-            if self.get_cell(cell).owner().is_none() {
+            if self[cell].owner().is_none() {
                 is_draw = false;
                 break;
             }
@@ -168,7 +141,8 @@ pub trait Board<T: cell::Cell> {
 /// # struct MyTypeThatImplementsBoard {c: C};
 /// # struct C; // Some Cell
 /// # impl tic_tac_toe::board::cell::Cell for C {fn owner(&self) -> Option<&tic_tac_toe::Player> {None} fn as_char(&self) -> char {'a'}}
-/// # impl tic_tac_toe::board::Board<C> for MyTypeThatImplementsBoard {fn get_cell(&self, _: usize) -> &C {&self.c} fn cells<'a>(&'a self) -> impl Iterator<Item = &'a C> where C: 'a { std::iter::once(&self.c) }}
+/// # impl std::ops::Index<usize> for MyTypeThatImplementsBoard {type Output = C; fn index(&self, cell: usize) -> &Self::Output {&C}}
+/// # impl tic_tac_toe::board::Board<C> for MyTypeThatImplementsBoard {fn cells<'a>(&'a self) -> impl Iterator<Item = &'a C> where C: 'a { std::iter::once(&self.c) }}
 /// #
 /// use tic_tac_toe::board::BoardDisplay;
 /// impl std::fmt::Display for MyTypeThatImplementsBoard {
@@ -197,7 +171,7 @@ where
         for cell in 0..9 {
             result_str = result_str.replace(
                 char::from_digit(cell, 10).unwrap(),
-                self.get_cell(cell as usize).as_char().to_string().as_str(),
+                self[cell as usize].as_char().to_string().as_str(),
             );
         }
 

@@ -50,6 +50,15 @@ pub enum Player {
     Cross,
 }
 
+impl Player {
+    pub fn next(&self) -> Self {
+        match self {
+            Player::Circle => Player::Cross,
+            Player::Cross => Player::Circle,
+        }
+    }
+}
+
 /// The [`Player`] should be representable by a single [`char`]`.
 ///
 /// # Examples
