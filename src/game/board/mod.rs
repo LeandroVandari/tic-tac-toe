@@ -9,7 +9,6 @@ pub mod inner;
 pub use inner::InnerBoard;
 
 /// Contains the [`RecursiveBoard`]: the driving type of this module, as it represents the board
-
 /// of the Ultimate Tic-Tac-Toe game itself.
 pub mod recursive;
 pub use recursive::RecursiveBoard;

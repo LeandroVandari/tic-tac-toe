@@ -56,6 +56,9 @@ impl GameState {
         }
     }
 
+    /// Makes a move in the given `position`.
+    /// 
+    /// Returns [`Err`] if the given [`CellPosition`] is not an available move.
     pub fn make_move(&mut self, position: CellPosition) -> Result<(), ()> {
         if !self.available_moves().contains(&position) {
             return Err(());
@@ -66,8 +69,15 @@ impl GameState {
         Ok(())
     }
 
+    /// Returns the current state of the game's board.
     pub fn get_state(&self) -> crate::BoardState {
         self.board.get_state()
+    }
+}
+
+impl Default for GameState {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

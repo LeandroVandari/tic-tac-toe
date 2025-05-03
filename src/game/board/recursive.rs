@@ -23,6 +23,7 @@ impl RecursiveBoard {
         }
     }
 
+    /// Sets the cell to its given owner.
     pub fn set_cell(&mut self, position: &CellPosition, owner: Option<Player>) {
         self[position.outer_cell].set_cell(position.inner_cell, owner);
     }
@@ -107,6 +108,7 @@ pub mod cell {
             }
         }
 
+        /// Sets the value of the given `cell` in the contained [`InnerBoard`].
         pub fn set_cell(&mut self, cell: usize, owner: Option<Player>) {
             self.board[cell] = owner;
             self.state = self.board.get_state();

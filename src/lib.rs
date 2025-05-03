@@ -9,6 +9,10 @@ pub use game::board;
 
 pub(crate) mod errors;
 
+pub fn new() -> game::GameState {
+    game::GameState::new()
+}
+
 #[derive(PartialEq, Eq, Debug, Clone)]
 /// Represents the result of a finished board: either a player has won or it's a draw.
 ///
@@ -51,6 +55,16 @@ pub enum Player {
 }
 
 impl Player {
+    /// Returns the next [`Player`] in the playing order.
+    /// 
+    /// If the current player is a circle, the next is a cross, and vice-versa.
+    /// 
+    /// # Examples:
+    /// ```
+    /// #use tic_tac_toe::Player;
+    /// assert_eq!(Player::Circle.next(), Player::Cross);
+    /// assert_eq!(Player::Cross.next(), Player::Circle);
+    /// ```
     pub fn next(&self) -> Self {
         match self {
             Player::Circle => Player::Cross,
