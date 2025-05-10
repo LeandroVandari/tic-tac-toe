@@ -2,6 +2,8 @@ use std::ops::{Deref, DerefMut};
 
 use board::{Board, cell::Cell};
 
+use crate::Player;
+
 /// Handles everything that has direct relation to the management of the game board.
 /// Is driven by the [`Board`](board::Board) trait.
 ///
@@ -57,7 +59,7 @@ impl GameState {
     }
 
     /// Makes a move in the given `position`.
-    /// 
+    ///
     /// Returns [`Err`] if the given [`CellPosition`] is not an available move.
     pub fn make_move(&mut self, position: CellPosition) -> Result<(), ()> {
         if !self.available_moves().contains(&position) {
@@ -73,6 +75,14 @@ impl GameState {
     pub fn get_state(&self) -> crate::BoardState {
         self.board.get_state()
     }
+
+    pub fn to_play(&self) -> Player {
+        self.player_turn
+    }
+
+    pub fn board(&self) -> &board::RecursiveBoard {
+        &self.board
+    }
 }
 
 impl Default for GameState {
@@ -86,8 +96,16 @@ pub struct AvailableMoves {
     available_moves: arrayvec::ArrayVec<CellPosition, 81>,
 }
 
+impl AvailableMoves {
+    pub fn empty() -> Self {
+        Self {
+            available_moves: arrayvec::ArrayVec::new(),
+        }
+    }
+}
+
 /// Represents a specific given inner cell in the [`RecursiveBoard`](board::RecursiveBoard).
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct CellPosition {
     /// The index to the [`RecursiveCell`](board::recursive::RecursiveCell) directly contained by the [`RecursiveBoard`](board::RecursiveBoard).
     pub outer_cell: usize,

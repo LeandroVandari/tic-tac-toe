@@ -58,12 +58,12 @@ pub enum Player {
 
 impl Player {
     /// Returns the next [`Player`] in the playing order.
-    /// 
+    ///
     /// If the current player is a circle, the next is a cross, and vice-versa.
-    /// 
+    ///
     /// # Examples:
     /// ```
-    /// #use tic_tac_toe::Player;
+    /// # use tic_tac_toe::Player;
     /// assert_eq!(Player::Circle.next(), Player::Cross);
     /// assert_eq!(Player::Cross.next(), Player::Circle);
     /// ```
