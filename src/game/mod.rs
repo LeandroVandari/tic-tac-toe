@@ -68,6 +68,8 @@ impl GameState {
 
         self.board.set_cell(&position, Some(self.player_turn));
         self.player_turn = self.player_turn.next();
+        
+        self.cell_to_play =  if self.board[position.inner_cell].state().in_progress() {Some(position.inner_cell)} else {None};
         Ok(())
     }
 
